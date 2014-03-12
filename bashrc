@@ -6,6 +6,7 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # User specific aliases and functions
+alias work="ssh sayala@cominor.com"
 
 # If not running interactively, don't do anything
 case $- in
