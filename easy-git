@@ -1,0 +1,11 @@
+#!/bin/bash
+ls -al ~/.ssh
+ssh-keygen -t rsa -C "$1"
+
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+
+pbcopy < ~/.ssh/id_rsa.pub
+cat ~/.ssh/id_rsa.pub
+
+open -a "/Applications/Google Chrome.app" "https://github.com/settings/ssh"
