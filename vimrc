@@ -9,13 +9,12 @@ filetype plugin on        " Allow plugins to be loaded by file type.
 syntax on                 " Syntax highlighting.
 syntax enable
 
-set t_Co=16
+set t_Co=256
 
 set background=dark       " Light background for color schemes.
-colorscheme solarized            " Solarized color scheme.
-highlight ColorColumn ctermbg=10
+colorscheme solarized     " Solarized color scheme.
 
-set smartindent
+set keywordprg=pman       " php man shizzles
 set colorcolumn=80
 set autowrite             " Write before executing the 'make' command.
 set backspace=2           " Allow <BS> to go past last insert.
@@ -31,21 +30,28 @@ set nowrap                " Don't soft wrap.
 set number                " Display line numbers.
 set ruler                 " Display row, column and % of document.
 set scrolloff=10          " Keep min of 10 lines above/below cursor.
-set shiftwidth=2          " >> and << shift 3 spaces.
+set shiftwidth=3          " >> and << shift 3 spaces.
 set showcmd               " Show partial commands in the status line.
 set showmatch             " Show matching () {} etc..
 set showmode              " Show current mode.
 set smartcase             " Searches are case-sensitive if caps used.
-set softtabstop=2         " See spaces as tabs.
-set tabstop=2             " <Tab> move three characters.
+set softtabstop=3         " See spaces as tabs.
+set tabstop=3             " <Tab> move three characters.
 set textwidth=79          " Hard wrap at 79 characters.
 set virtualedit=block     " Allow the cursor to go where there's no char.
-set wildmode=longest,list " Tab completion works like bash.
+set path=.,,~/Code/**
+
+" Live dangerously
+set nobackup
+set nowritebackup
+set noswapfile
+
+"set wildmode=longest,list " Tab completion works like bash.
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Link in bundles
 
-" call pathogen#infect()
+call pathogen#infect()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Set some configuration variables.
@@ -90,39 +96,59 @@ noremap <Leader>h :set hlsearch! hlsearch?<CR>
 " Open a scratch buffer.
 noremap <Leader>s :Scratch<CR>
 
-	" Execute an :lcd to the directory of the file being edited.
+" Execute an :lcd to the directory of the file being edited.
 function LcdToCurrent()
-	let dir = expand("%:h")
-	execute "lcd " . dir
-	endfunction
-	noremap <Leader>cd :call LcdToCurrent()<CR>
+    let dir = expand("%:h")
+    execute "lcd " . dir
+endfunction
+noremap <Leader>cd :call LcdToCurrent()<CR>
 
-	"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-	" Insert mode cartography
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Insert mode cartography
 
-	" Insert <Tab> or complete identifier if the cursor is after a keyword
-	" character.
+" Insert <Tab> or complete identifier if the cursor is after a keyword
+" character.
 function TabOrComplete()
-	let col = col('.')-1
-	if !col || getline('.')[col-1] !~ '\k'
-	return "\<tab>"
-	else
-	return "\<C-N>"
-	endif
-	endfunction
-	inoremap <Tab> <C-R>=TabOrComplete()<CR>
+    let col = col('.')-1
+    if !col || getline('.')[col-1] !~ '\k'
+        return "\<tab>"
+    else
+        return "\<C-N>"
+     endif
+endfunction
+inoremap <Tab> <C-R>=TabOrComplete()<CR>
+set complete-=i
 
-	"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-	" Restore the cursor when we can.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Restore the cursor when we can.
 
 function! RestoreCursor()
-	if line("'\"") <= line("$")
-	normal! g`"
-	normal! zz
-	endif
-	endfunction
-autocmd BufWinEnter * call RestoreCursor()
+    if line("'\"") <= line("$")
+        normal! g`"
+        normal! zz
+    endif
+endfunction
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Stefan - custom commands
+"
+let g:dbgPavimPort = 9000
+let g:dbgPavimBreakAtEntry = 0
 
 command Nuke %s/\s\+$//gc
 command JS :set ts=2 sw=2 sts=2 et
 command PHP :set ts=3 sw=3 sts=3 et
+command PYTHON :set ts=4 sw=4 sts=4 et
+command PE :set path=.,,~/Code/../ifixit-eustore/oxid49/**
+
+set tabpagemax=200
+set runtimepath^=~/.vim/bundle/ctrlp.vim
+
+set wildignore+=*.log
+set wildignore+=Logs/**
+set wildignore+=**/.git/**
+set wildignore+=**/node_modules/**
+set wildignore+=**/vendor/**```
+
+" fzf fuzzy finder
+set rtp+=/usr/share/nvim/site/plugin/fzf.vim
+nnoremap <Leader>f :FZF<CR>
